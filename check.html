@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreditFlow – Credit Approval Application</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- Styles -->
+  <style>
+    /* ========== CSS VARIABLES ========== */
+    :root {
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #3b82f6;
+      --accent-color: #06b6d4;
+      --accent-light: #67e8f9;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-accent: #f1f5f9;
+      --border-color: #e5e7eb;
+      --border-focus: #3b82f6;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .nav-brand i {
+      font-size: 2rem;
+      color: var(--accent-color);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--primary-color);
+      background-color: var(--bg-accent);
+    }
+
+    .nav-links a.active::after {
+      content: "";
+      position: absolute;
+      bottom: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: var(--primary-color);
+      border-radius: 50%;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(
+        135deg,
+        var(--primary-color) 0%,
+        var(--primary-dark) 50%,
+        var(--accent-color) 100%
+      );
+      color: white;
+      padding: 4rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><defs><pattern id='grid' width='50' height='50' patternUnits='userSpaceOnUse'><path d='M 50 0 L 0 0 0 50' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1'/></pattern></defs><rect width='100%' height='100%' fill='url(%23grid)'/></svg>");
+      opacity: 0.3;
+    }
+
+    .hero-container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(45deg, var(--accent-color), var(--accent-light));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ===== FORM ===== */
+    .form-container {
+      max-width: 900px;
+      margin: -4rem auto 4rem;
+      position: relative;
+      z-index: 10;
+      padding: 0 1rem;
+    }
+
+    .form-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .form-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .form-header h2 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      opacity: 0.9;
+      font-size: 1.125rem;
+    }
+
+    .form-content {
+      padding: 2.5rem;
+    }
+
+    .progress-bar {
+      background: var(--bg-accent);
+      border-radius: 1rem;
+      height: 8px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      height: 100%;
+      border-radius: 1rem;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .form-group label i {
+      color: var(--primary-color);
+      font-size: 1rem;
+    }
+
+    .form-input,
+    .form-select {
+      padding: 1rem 1.25rem;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* === RADIO GROUP === */
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .radio-option {
+      position: relative;
+    }
+
+    .radio-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .radio-option input[type="radio"]:checked + label {
+      border-color: var(--primary-color);
+      background: rgba(37, 99, 235, 0.05);
+      color: var(--primary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .radio-option label:hover {
+      border-color: var(--primary-light);
+      background: var(--bg-accent);
+    }
+
+    /* === SUBMIT BUTTON === */
+    .submit-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.25rem 2rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-size: 1.125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ERROR / SUCCESS */
+    .form-group.error .form-input,
+    .form-group.error .form-select {
+      border-color: var(--error-color);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .success-message {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--success-color);
+      padding: 1rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ANIMATIONS */
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .slide-up {
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 3rem 1rem 5rem;
+      }
+      .form-container {
+        margin-top: -3rem;
+      }
+      .form-content {
+        padding: 1.5rem;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .radio-group {
+        grid-template-columns: 1fr;
+      }
+      .nav-links {
+        display: none;
+      }
+    }
+    @media (max-width: 480px) {
+      .form-header {
+        padding: 1.5rem;
+      }
+      .form-header h2 {
+        font-size: 1.5rem;
+      }
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <i class="fas fa-credit-card"></i>
+        CreditFlow
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/check" class="active">Check Approval</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-badge fade-in">
+        <i class="fas fa-shield-alt"></i>
+        Secure &amp; Encrypted Application
+      </div>
+
+      <h1 class="slide-up">
+        Get Your <span class="hero-highlight">Credit Decision</span><br />
+        in Under 60 Seconds
+      </h1>
+
+      <p class="slide-up">
+        Complete our secure application form and receive an instant credit decision powered by advanced AI technology.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== FORM ===== -->
+  <div class="form-container">
+    <div class="form-card slide-up">
+      <div class="form-header">
+        <h2>Credit Application Form</h2>
+        <p>Please provide accurate information for the best results</p>
+      </div>
+
+      <div class="form-content">
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form id="creditForm" action="/check" method="post" novalidate>
+          <div class="form-grid">
+            <!-- Age -->
+            <div class="form-group">
+              <label for="age">
+                <i class="fas fa-user"></i>
+                Age
+              </label>
+              <div class="input-with-icon">
+                <input type="number" id="age" name="age" class="form-input" placeholder="Enter your age" min="0" required />
+                <i class="fas fa-user"></i>
+              </div>
+            </div>
+
+            <!-- Job -->
+            <div class="form-group">
+              <label for="job">
+                <i class="fas fa-briefcase"></i>
+                Job
+              </label>
+              <select id="job" name="job" class="form-select" required>
+                <option value="">Select your job</option>
+                <option value="admin.">Admin</option>
+                <option value="blue-collar">Blue-collar</option>
+                <option value="entrepreneur">Entrepreneur</option>
+                <option value="housemaid">Housemaid</option>
+                <option value="management">Management</option>
+                <option value="retired">Retired</option>
+                <option value="self-employed">Self-employed</option>
+                <option value="services">Services</option>
+                <option value="student">Student</option>
+                <option value="technician">Technician</option>
+                <option value="unemployed">Unemployed</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </div>
+
+            <!-- Marital (RADIO BUTTONS) -->
+            <div class="form-group">
+              <label>
+                <i class="fas fa-heart"></i>
+                Marital Status
+              </label>
+
+              <div class="radio-group">
+                <!-- Married -->
+                <div class="radio-option">
+                  <input type="radio" id="married" name="marital" value="married" required />
+                  <label for="married">
+                    <i class="fas fa-ring"></i>
+                    Married
+                  </label>
+                </div>
+
+                <!-- Single -->
+                <div class="radio-option">
+                  <input type="radio" id="single" name="marital" value="single" />
+                  <label for="single">
+                    <i class="fas fa-user"></i>
+                    Single
+                  </label>
+                </div>
+
+                <!-- Divorced -->
+                <div class="radio-option">
+                  <input type="radio" id="divorced" name="marital" value="divorced" />
+                  <label for="divorced">
+                    <i class="fas fa-user-slash"></i>
+                    Divorced
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Education -->
+            <div class="form-group">
+              <label for="education">
+                <i class="fas fa-graduation-cap"></i>
+                Education
+              </label>
+              <select id="education" name="education" class="form-select" required>
+                <option value="">Select education</option>
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+                <option value="tertiary">Tertiary</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </div>
+
+            <!-- Balance -->
+            <div class="form-group">
+              <label for="balance">
+                <i class="fas fa-wallet"></i>
+                Balance
+              </label>
+              <div class="input-with-icon">
+                <input type="number" id="balance" name="balance" class="form-input" placeholder="Enter your balance" required />
+                <i class="fas fa-wallet"></i>
+              </div>
+            </div>
+
+            <!-- Housing -->
+            <div class="form-group">
+              <label for="housing">
+                <i class="fas fa-home"></i>
+                Housing Loan
+              </label>
+              <select id="housing" name="housing" class="form-select" required>
+                <option value="">Do you have a housing loan?</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            <!-- Duration -->
+            <div class="form-group">
+              <label for="duration">
+                <i class="fas fa-clock"></i>
+                Duration (in days)
+              </label>
+              <div class="input-with-icon">
+                <input type="number" id="duration" name="duration" class="form-input" placeholder="Enter duration" required />
+                <i class="fas fa-clock"></i>
+              </div>
+            </div>
+
+            <!-- Campaign -->
+            <div class="form-group">
+              <label for="campaign">
+                <i class="fas fa-bullhorn"></i>
+                Campaign
+              </label>
+              <div class="input-with-icon">
+                <input type="number" id="campaign" name="campaign" class="form-input" placeholder="Enter campaign" required />
+                <i class="fas fa-bullhorn"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="submit-section">
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <i class="fas fa-rocket"></i>
+              <span id="btnText">Get Instant Credit Decision</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("creditForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const progressFill = document.getElementById("progressFill");
+
+      /* ---------- VALIDATION RULES ---------- */
+      const validationRules = {
+        age: { min: 18, message: "You must be at least 18 years old" },
+        balance: { min: 0, message: "Balance cannot be negative" },
+        duration: { min: 1, message: "Duration must be at least 1 day" },
+        campaign: { min: 1, message: "Campaign must be at least 1" },
+      };
+
+      /* ---------- PROGRESS BAR ---------- */
+      function updateProgress() {
+        const formData = new FormData(form);
+        const totalFields = 8; // age, job, marital, education, balance, housing, duration, campaign
+        let filledFields = 0;
+
+        // numeric inputs
+        ["age", "balance", "duration", "campaign"].forEach((field) => {
+          if (formData.get(field) && formData.get(field).trim() !== "") filledFields++;
+        });
+
+        // selects
+        ["job", "education", "housing"].forEach((field) => {
+          if (formData.get(field) && formData.get(field) !== "") filledFields++;
+        });
+
+        // radio group (marital)
+        if (formData.get("marital")) filledFields++;
+
+        progressFill.style.width = (filledFields / totalFields) * 100 + "%";
+      }
+
+      /* ---------- FIELD VALIDATION ---------- */
+      function validateField(field, value) {
+        const errorId = field.name + "Error";
+        let errorElement = document.getElementById(errorId);
+
+        if (!errorElement) {
+          errorElement = document.createElement("div");
+          errorElement.id = errorId;
+          errorElement.className = "error-message";
+          field.closest(".form-group").appendChild(errorElement);
+        }
+
+        const formGroup = field.closest(".form-group");
+        formGroup.classList.remove("error");
+        errorElement.textContent = "";
+
+        if (field.hasAttribute("required") && !value) {
+          showError(formGroup, errorElement, "This field is required");
+          return false;
+        }
+
+        if (validationRules[field.name]) {
+          const rule = validationRules[field.name];
+          if (parseFloat(value) < rule.min) {
+            showError(formGroup, errorElement, rule.message);
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function showError(group, element, msg) {
+        group.classList.add("error");
+        element.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
+      }
+
+      /* ---------- REAL-TIME LISTENERS ---------- */
+      form.querySelectorAll("input, select").forEach((field) => {
+        ["input", "change", "blur"].forEach((ev) => {
+          field.addEventListener(ev, function () {
+            const val = field.type === "radio" ? form.querySelector(`input[name="${field.name}"]:checked`)?.value || "" : this.value;
+            validateField(field, val);
+            updateProgress();
+          });
+        });
+      });
+
+      /* ---------- SUBMIT ---------- */
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        let isValid = true;
+        const formData = new FormData(form);
+
+        form.querySelectorAll("input[required], select[required]").forEach((field) => {
+          const value = field.type === "radio" ? formData.get(field.name) : field.value;
+          if (!validateField(field, value)) isValid = false;
+        });
+
+        if (!isValid) {
+          const firstError = form.querySelector(".form-group.error");
+          if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        // Loading state
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<span class="loading-spinner"></span> Processing Application...';
+
+        // Simulate server latency
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          btnText.innerHTML = '<i class="fas fa-rocket"></i> Get Instant Credit Decision';
+          form.submit(); // real submission
+        }, 2000);
+      });
+
+      /* ---------- INTERSECTION FADE-IN ---------- */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      document.querySelectorAll(".form-group").forEach((el, idx) => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(20px)";
+        el.style.transition = `all 0.6s ease ${idx * 0.1}s`;
+        observer.observe(el);
+      });
+
+      // init
+      updateProgress();
+    });
+
+    /* ---------- ENTER KEY NAVIGATION ---------- */
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && e.target.type !== "submit") {
+        e.preventDefault();
+        const els = Array.from(document.querySelectorAll("input, select, button"));
+        const idx = els.indexOf(e.target);
+        if (els[idx + 1]) els[idx + 1].focus();
+      }
+    });
+  </script>
+</body>
+</html>
